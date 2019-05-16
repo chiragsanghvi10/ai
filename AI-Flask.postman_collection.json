@@ -1,0 +1,104 @@
+{
+	"id": "f88b7eef-9f35-c222-ae49-c890fd010ed2",
+	"name": "AI-Flask",
+	"description": "",
+	"order": [
+		"b27309ba-9635-d422-d0e9-45aa37317b5e",
+		"c6e6ed1e-a597-a3f6-586a-2dedf69f156a"
+	],
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1555074364552,
+	"owner": 0,
+	"public": false,
+	"requests": [
+		{
+			"id": "b27309ba-9635-d422-d0e9-45aa37317b5e",
+			"headers": "",
+			"headerData": [],
+			"url": "35.200.228.189:5010/sentence_similarity",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "sentence1",
+					"value": "Hello",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "sentence2",
+					"value": "Good bye",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1555074376443,
+			"name": "Sentence Similarity",
+			"description": "",
+			"collectionId": "f88b7eef-9f35-c222-ae49-c890fd010ed2",
+			"responses": []
+		},
+		{
+			"id": "c6e6ed1e-a597-a3f6-586a-2dedf69f156a",
+			"headers": "",
+			"headerData": [],
+			"url": "http://35.200.228.189:5010/transcibe?task_id=17917498&language=en-IN&model=False&engine=deepspeech",
+			"queryParams": [
+				{
+					"key": "task_id",
+					"value": "17917498",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "language",
+					"value": "en-IN",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "model",
+					"value": "False",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "engine",
+					"value": "deepspeech",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "f88b7eef-9f35-c222-ae49-c890fd010ed2",
+			"data": null,
+			"dataMode": "params",
+			"name": "transcription",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1555077747523,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {}
+		}
+	]
+}

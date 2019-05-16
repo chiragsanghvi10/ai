@@ -1,0 +1,10 @@
+chunk_folder_path: /home/absin/Documents/dev/sentenceSimilarity/speech/transcription/transfer_learning/chunks/
+host: db.talentify.in
+password: cx6ac54nmgGtLD1y
+stereo_folder: /home/absin/Documents/dev/sentenceSimilarity/speech/transcription/transfer_learning/calls_dual/
+
+deepspeech:
+  model_path: /root/DeepSpeech/models/output_graph.pbmm
+  alphabet_path: /root/DeepSpeech/models/alphabet.txt
+  lm_path: /root/DeepSpeech/models/lm.binary
+  trie_path: /root/DeepSpeech/models/trie

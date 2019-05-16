@@ -1,0 +1,124 @@
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<div id="app-7">
+  <div class="controls">
+    <input value="5" class="pagination" type="number">
+    <button class="next" onclick="next_page()">Next</button></div>
+  <chunk-item v-for="chunk in chunks" v-bind:chunk="chunk" v-bind:key="chunk.id">
+  </chunk-item>
+</div>
+<style media="screen">
+  td {
+    padding: 12px;
+    border: 1px solid black;
+    height: 50px;
+    vertical-align: bottom;
+  }
+
+  .controls {
+    width: 100%;
+    padding: 20px
+  }
+
+  .is_seen {
+    background-color: #f1dbdb
+  }
+  .is_verified{
+    background-color: #98f9bf
+  }
+</style>
+<script type="text/javascript">
+  Vue.component('chunk-item', {
+    props: ['chunk'],
+    template: '<tr v-bind:class="{ is_seen: chunk.is_seen, is_verified: chunk.is_verified }" v-bind:id="chunk.id"><td>{{ chunk.id }}</td><td contenteditable="true" onblur="update_chunk_transcription()" >'
+      + '{{ chunk.transcription }}</td><td><label>Is Verified?</label><input type="checkbox" onchange="update_chunk_verification()" v-model="chunk.is_verified"></td><td><audio onplay="play_audio()" controls v-bind:src="chunk.url" type="audio/mpeg">' +
+      'Your browser does not support the audio element.</audio></td></tr>'
+  })
+
+  var app7 = new Vue({
+    el: '#app-7',
+    data: {
+      chunks: [
+        { id: 0, transcription: 'Vegetables', url: 'https://storage.googleapis.com/istar-static/17897067.wav', is_verified: true },
+        { id: 1, transcription: 'Cheese', url: 'https://storage.googleapis.com/istar-static/17897067.wav', is_verified: true },
+        { id: 2, transcription: 'Whatever else humans are supposed to eat', url: 'https://storage.googleapis.com/istar-static/17897067.wav', is_verified: true }
+      ]
+    },
+    mounted() {
+      var self = this;
+      var url = '/chunks?page=0'+'&pagination='+5;
+      $.get(url).done(function (data) { d = JSON.parse(data); self.chunks = d; });
+    }
+  });
+
+  update_chunk_transcription = function () {
+    var x = $(event.target);
+    var chunk_id = x.parent()[0].id;
+    var new_transcript = x.text();
+    var url = '/update_chunk_transcription?chunk_id=' + chunk_id + '&transcript=' + new_transcript;
+    if (true) {
+      $.get(url).done(function (data) {
+        var new_chunk = JSON.parse(data)[0];
+        for (var i = 0; i < app7.chunks.length; i++) {
+          if (app7.chunks[i].id == chunk_id) {
+            app7.chunks[i].transcription = new_chunk.transcription;
+            break;
+          }
+        }
+      });
+    } else {
+      return true;
+    }
+  }
+  update_chunk_verification = function () {
+    var x = $(event.target);
+    var chunk_id = $(x.parent()[0]).parent()[0].id;
+    var is_verified = x[0].checked;
+    var url = '/verify_chunk?chunk_id=' + chunk_id + '&is_verified=' + is_verified;
+    if (true) {
+      $.get(url).done(function (data) {
+        var new_chunk = JSON.parse(data)[0];
+        for (var i = 0; i < app7.chunks.length; i++) {
+          if (app7.chunks[i].id == chunk_id) {
+            app7.chunks[i].is_verified = new_chunk.is_verified;
+            break;
+          }
+        }
+      });
+    } else {
+      return true;
+    }
+  }
+
+  play_audio = function () {
+    var x = $(event.target);
+    var chunk_id = $(x.parent()[0]).parent()[0].id;
+    var url = '/seen_chunk?chunk_id=' + chunk_id;
+    if (true) {
+      $.get(url).done(function (data) {
+        var new_chunk = JSON.parse(data)[0];
+        for (var i = 0; i < app7.chunks.length; i++) {
+          if (app7.chunks[i].id == chunk_id) {
+            app7.chunks[i].is_seen = new_chunk.is_seen;
+            break;
+          }
+        }
+      });
+    } else {
+      return true;
+    }
+  }
+  next_page = function () {
+    window.pagination = $('.pagination').val();
+    window.current_page ++;
+    var url = '/chunks?page='+window.current_page+'&pagination='+window.pagination;
+    $.get(url).done(function (data) {
+      d = JSON.parse(data); app7.chunks = d;
+    });
+  }
+  $(document).ready(function () {
+    window.current_page = 0;
+  })
+
+</script>
