@@ -5,12 +5,14 @@ from flask import send_from_directory
 from text import sentence_similarity as sentence_similarity_api
 from speech.analysis import main as analysis_api
 from speech.emotion import emotion_api
+from speech.utils import misc
 import jsonpickle
 import redis
 from speech.transcription.transfer_learning import chunk_data_api as chunk_api
 import tensorflow as tf
 import tensorflow_hub as hub
 import json
+import uuid
 
 app = Flask(__name__)
 loaded_model = None
@@ -36,35 +38,59 @@ def sentence_similarity():
 @app.route("/transcibe", methods=['GET', 'POST'])
 def transcibe():
     task_id = request.args['task_id']
+    if task_id is None:
+        task_id = uuid.uuid4().hex
+    task_url = misc.get_task_url(task_id)
+    url = request.args.get("url")
+    if url is None:
+        print("URL not provided")
+    else:
+        task_url = url
     language = request.args['language']
     model = (request.args['model'] == 'True')
     engine = request.args['engine']
     if engine is None:
         engine = 'google'
     print('Started: '+task_id)
-    conversation_blocks = analysis_api.transcribe_emotion(engine, task_id, language, model, loaded_model, pool, False)
+    conversation_blocks = analysis_api.transcribe_emotion(engine, task_id, language, model, loaded_model, pool, task_url, False)
     print('Finished: '+task_id)
     return jsonpickle.encode(conversation_blocks)
 
 @app.route("/transcibe_emotion", methods=['GET', 'POST'])
 def transcibe_emotion():
     task_id = request.args['task_id']
+    if task_id is None:
+        task_id = uuid.uuid4().hex
+    task_url = misc.get_task_url(task_id)
+    url = request.args.get("url")
+    if url is None:
+        print("URL not provided")
+    else:
+        task_url = url
     language = request.args['language']
     model = (request.args['model'] == 'True')
     engine = request.args['engine']
     if engine is None:
         engine = 'google'
-    conversation_blocks = analysis_api.transcribe_emotion(engine, task_id, language, model, loaded_model, pool)
+    conversation_blocks = analysis_api.transcribe_emotion(engine, task_id, language, model, loaded_model, pool, task_url)
     return jsonpickle.encode(conversation_blocks)
 
 @app.route("/emotion", methods=['GET', 'POST'])
 def emotion():
     task_id = request.args['task_id']
+    if task_id is None:
+        task_id = uuid.uuid4().hex
+    url = request.args.get("url")
+    if url is None:
+        print("URL not provided")
+        task_url = misc.get_task_url(task_id)
+    else:
+        task_url = url
     global loaded_model
     if loaded_model is None:
         loaded_model = emotion_api.getModel()
         loaded_model._make_predict_function()
-    emotion_blocks = analysis_api.emotion(task_id, loaded_model)
+    emotion_blocks = analysis_api.emotion(task_url, task_id, loaded_model)
     return jsonpickle.encode(emotion_blocks)
 
 @app.route("/chunks", methods=['GET', 'POST'])

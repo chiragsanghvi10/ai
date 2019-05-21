@@ -7,6 +7,9 @@ requests.adapters.DEFAULT_RETRIES = 50
 import time
 from shutil import copy2
 
+def get_task_url(task_id):
+    return 'https://storage.googleapis.com/istar-static/'+task_id+'.wav'
+
 def split_stereo(file_path, destination_folder = 'NA'):
     fs, data = wavfile.read(file_path)            # reading the file
     file_name = Path(file_path).resolve().stem

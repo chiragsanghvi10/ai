@@ -45,15 +45,14 @@ def append_phrases(phrases, product_id):
             con.close()
     return phrases
 
-def transcribe_emotion(engine, task_id, language, model, loaded_model, pool, do_emotion = True):
+def transcribe_emotion(engine, task_id, language, model, loaded_model, pool, task_url, do_emotion = True):
     phrases=[]
     try:
         append_phrases(phrases, task_id)
     except:
         print('Fetching speech context failed for: '+task_id)
     task_folder = '/home/absin/git/sentenceSimilarity/speech/audio/tasks/'
-    task_file_path = misc.download_file(
-        'https://storage.googleapis.com/istar-static/'+task_id+'.wav', task_folder)['abs_path']
+    task_file_path = misc.download_file(task_url, task_folder)['abs_path']
     channel_files = [task_file_path]
     # split multichannel to 2 files
     with contextlib.closing(wave.open(task_file_path, 'rb')) as wf:
@@ -121,10 +120,9 @@ def transcribe_emotion(engine, task_id, language, model, loaded_model, pool, do_
     #print(jsonpickle.encode(conversation_blocks))
     return conversation_blocks
 
-def emotion(task_id, loaded_model):
+def emotion(task_url, task_id, loaded_model):
     task_folder = '/home/absin/git/sentenceSimilarity/speech/audio/tasks/'
-    task_file_path = misc.download_file(
-        'https://storage.googleapis.com/istar-static/'+task_id+'.wav', task_folder)['abs_path']
+    task_file_path = misc.download_file(task_url, task_folder)['abs_path']
     channel_files = [task_file_path]
     # split multichannel to 2 files
     with contextlib.closing(wave.open(task_file_path, 'rb')) as wf:
